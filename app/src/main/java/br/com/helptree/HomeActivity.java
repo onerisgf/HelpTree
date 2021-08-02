@@ -152,7 +152,6 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-
                         Map<String, Object> dados;
 
                         dados = document.getData();
