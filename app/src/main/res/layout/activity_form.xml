@@ -255,8 +255,8 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:onClick="addTreeClick"
-        app:srcCompat="@drawable/icon_add_tree"
-        tools:layout_editor_absoluteX="24dp"
-        tools:layout_editor_absoluteY="24dp" />
+        app:layout_constraintStart_toStartOf="@+id/imageTree"
+        app:layout_constraintTop_toTopOf="@+id/imageTree"
+        app:srcCompat="@drawable/icon_add_tree" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

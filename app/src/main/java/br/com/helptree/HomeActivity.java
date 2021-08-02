@@ -145,7 +145,7 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
         //CAPTURA OS DADOS DA ARVORE NO FIREBASE E PASSA PARA OS CAMPOS
 
-        DocumentReference docRef = myFireStoreRef.collection("arvores").document("IqSLo3zsySex6tKmebNn");
+        DocumentReference docRef = myFireStoreRef.collection("arvores").document("xsFClV8YqCUxSNhtRIbp");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -474,7 +474,7 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
         map.clear();  //LIMPA MARCADORES QUE JA EXISTEM PARA PODER ATUALIZAR O GPS A CADA 2 SEGUNDOS
 
-        local = new LatLng(-25.513994, -49.286515);
+        local = new LatLng(-25.515861, -49.287940);
 
         map.addMarker(new MarkerOptions().position(local).title("Você"));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(local, 15f));
