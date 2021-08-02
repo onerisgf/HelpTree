@@ -132,9 +132,8 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
             );
         } else {
 
+            //CRIA O MAPA
             mapa.onCreate(mapaBundle);
-
-            mapa.getMapAsync(this);
 
         }
     }
@@ -152,6 +151,7 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+
                         Map<String, Object> dados;
 
                         dados = document.getData();
@@ -168,6 +168,10 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
                         //BUSCA A IMAGEM DO BD
 
                         getIMGArvore(dados.get("IMG").toString());
+
+                        //CHAMA O MAPA
+
+                        mapa.getMapAsync(HomeActivity.this);
 
 
                     } else {
@@ -476,8 +480,22 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
         local = new LatLng(-25.515861, -49.287940);
 
-        map.addMarker(new MarkerOptions().position(local).title("Você"));
+        String nomeTree = txtNome.getText().toString();
+
+        map.addMarker(new MarkerOptions().position(local).title(nomeTree));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(local, 15f));
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState);
+
+        Bundle mapaBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
+        if(mapaBundle == null){
+            mapaBundle = new Bundle();
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapaBundle);
+        }
+        mapa.onSaveInstanceState(mapaBundle);
     }
 
     @Override
@@ -508,18 +526,6 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
     protected void onDestroy() {
         super.onDestroy();
         mapa.onDestroy();
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState);
-
-        Bundle mapaBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
-        if(mapaBundle == null){
-            mapaBundle = new Bundle();
-            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapaBundle);
-        }
-        mapa.onSaveInstanceState(mapaBundle);
     }
 
     @Override
