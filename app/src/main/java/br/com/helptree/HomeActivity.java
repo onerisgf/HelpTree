@@ -13,6 +13,8 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -53,12 +55,14 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallback  {
 
     //VARIAVERIS
 
+    private int GPS_REQUEST_CODE = 9001;
     public static final int REQUEST_CODE_LOCATION_PERMISSION = 1 ;
     public static final int PICK_IMAGE_REQUEST = 1;
     public static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey" ;
@@ -109,6 +113,7 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
         myDataBaseRef = FirebaseDatabase.getInstance().getReference("arvores");
         myFireStoreRef = FirebaseFirestore.getInstance();
 
+
         //CHAMA A FUNÇÃO QUE TRAS OS DADOS DA ARVORE
         getDadosArvore();
 
@@ -136,6 +141,10 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
             mapa.onCreate(mapaBundle);
 
         }
+
+
+
+
     }
 
     //BUSCA OS DADOS NO BD
@@ -144,7 +153,8 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
         //CAPTURA OS DADOS DA ARVORE NO FIREBASE E PASSA PARA OS CAMPOS
 
-        DocumentReference docRef = myFireStoreRef.collection("arvores").document("xsFClV8YqCUxSNhtRIbp");
+        DocumentReference docRef = myFireStoreRef.collection("arvores").document("D8XjYa7FG73hP0Tex68r");
+
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -164,6 +174,8 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
                         txtCEP.setText(dados.get("CEP").toString());
                         txtEndereco.setText(dados.get("Endereco").toString());
                         txtNumero.setText(dados.get("Numero").toString());
+                        latitude = Double.parseDouble(dados.get("Latitude").toString());
+                        longitude = Double.parseDouble(dados.get("Longitude").toString());
 
                         //BUSCA A IMAGEM DO BD
 
@@ -265,6 +277,16 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
     //METODOS PARA SELECIONAR IMAGEM DA GALERIA
 
     public void addTreeClick(View v){
+
+
+        txtNome = null;
+        txtCientifico = null;
+        txtFamilia = null;
+        txtData = null;
+        txtCEP = null;
+        txtEndereco = null;
+        txtNumero = null;
+
 
        openSeletorArquivos();
 
@@ -441,6 +463,30 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
         arvore.put("Numero", txtNumero.getText().toString());
         arvore.put("IMG", url);
 
+        String endereco = txtEndereco.getText().toString() + ", " + txtNumero.getText().toString();
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+
+            List<Address> addressList = geocoder.getFromLocationName(endereco, 1);
+
+            if(addressList.size() > 0){
+                Address address = addressList.get(0);
+
+                Double getLatitude = address.getLatitude();
+
+                arvore.put("Latitude", getLatitude.toString());
+
+                Double getLongitude = address.getLongitude();
+
+                arvore.put("Longitude", getLongitude.toString());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         // Adiciona um novo documento com um ID gerado
         myFireStoreRef.collection("arvores")
@@ -471,6 +517,9 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
     }
 
 
+
+
+
     //CINFIGURAÇÃOES MAPA
 
     @Override
@@ -478,7 +527,7 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
         map.clear();  //LIMPA MARCADORES QUE JA EXISTEM PARA PODER ATUALIZAR O GPS A CADA 2 SEGUNDOS
 
-        local = new LatLng(-25.515861, -49.287940);
+        local = new LatLng(latitude, longitude);
 
         String nomeTree = txtNome.getText().toString();
 
