@@ -17,13 +17,33 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    public static double latitude, longitude;
 
+    private  StorageReference myStorageRef;
+    private DatabaseReference myDataBaseRef;
+    private FirebaseFirestore myFireStoreRef;
+
+    List<Map<String,Object>> dados = new ArrayList<Map<String,Object>>();
 
     MapView mapa;
 
@@ -33,6 +53,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+
+        myStorageRef = FirebaseStorage.getInstance().getReference("arvores");
+        myDataBaseRef = FirebaseDatabase.getInstance().getReference("arvores");
+        myFireStoreRef = FirebaseFirestore.getInstance();
+
+        getTress();
+
+
         mapa = (MapView) findViewById(R.id.mapWorld);
 
 
@@ -41,11 +69,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         mapa.onCreate(mapaBundle);
 
-        mapa.getMapAsync(this);
+
+
 
         //CAPTURA OS DADOS OBTIDOS DA TELA DE LOGIN
-
-
 
         Intent pagina = getIntent();
         Bundle params = pagina.getExtras();
@@ -62,6 +89,51 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     }
+
+    //CAPTURO OS DADOS DE TODAS AS ARVORES
+
+    public void getTress(){
+
+        myFireStoreRef.collection("arvores")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                        if (task.isSuccessful()) {
+
+                            dados.add(new HashMap<String,Object>());
+
+                            //PASSO OS DADOS PARA DENTRO DA LISTA
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                dados.add(document.getData());
+
+                            }
+
+                            for(int i = 1; i < dados.size(); i++){
+
+                                System.out.println(dados.get(i));
+
+                            }
+
+
+                            mapa.getMapAsync(MapActivity.this);
+
+
+                        } else {
+
+                            Toast.makeText(MapActivity.this, "Erro ao tentar dar getting nos documentos.", Toast.LENGTH_LONG).show();
+
+
+                        }
+                    }
+                });
+
+    }
+
+
 
     //CLICK PERFIL ARVORE
 
@@ -98,17 +170,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(@NonNull GoogleMap map) {
 
+        map.clear();
+
+        for(int i = 1; i < dados.size(); i++) {
+
+            latitude = Double.parseDouble(dados.get(i).get("Latitude").toString());
+            longitude = Double.parseDouble(dados.get(i).get("Longitude").toString());
+
+            LatLng local = new LatLng(latitude, longitude);
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(local, 13f));
+
+            map.addMarker(new MarkerOptions().position(local).title(dados.get(i).get("Nome").toString()));
+
+        }
 
 
-        map.clear();  //LIMPA MARCADORES QUE JA EXISTEM PARA PODER ATUALIZAR O GPS A CADA 2 SEGUNDOS
-
-
-        map.addMarker(new MarkerOptions().position(HomeActivity.local).title("Você"));
-
-        HomeActivity.local = new LatLng(-25.513945, -49.290528);
-
-        map.addMarker(new MarkerOptions().position(HomeActivity.local).title("Você"));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(HomeActivity.local, 15f));
     }
 
     @Override

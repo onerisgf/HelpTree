@@ -70,9 +70,9 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
     private Uri uriImage;
 
-    private StorageReference myStorageRef;
-    private DatabaseReference myDataBaseRef;
-    private FirebaseFirestore myFireStoreRef;
+    private  StorageReference myStorageRef;
+    private  DatabaseReference myDataBaseRef;
+    private  FirebaseFirestore myFireStoreRef;
 
     private ImageView imageTree;
 
@@ -115,7 +115,10 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
 
         //CHAMA A FUNÇÃO QUE TRAS OS DADOS DA ARVORE
-        getDadosArvore();
+
+        String idTree = "wUGLCjRveUA42OvYsipn";
+
+        getDadosArvore(idTree);
 
         //INICIALIZA MAPA
 
@@ -143,23 +146,23 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
         }
 
 
-
-
     }
 
     //BUSCA OS DADOS NO BD
 
-    public void getDadosArvore(){
+    public void getDadosArvore(String idTree){
+
+        DocumentReference docRef = myFireStoreRef.collection("arvores").document(idTree);
 
         //CAPTURA OS DADOS DA ARVORE NO FIREBASE E PASSA PARA OS CAMPOS
-
-        DocumentReference docRef = myFireStoreRef.collection("arvores").document("D8XjYa7FG73hP0Tex68r");
 
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
+
                     DocumentSnapshot document = task.getResult();
+
                     if (document.exists()) {
 
                         Map<String, Object> dados;
@@ -279,13 +282,14 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
     public void addTreeClick(View v){
 
 
-        txtNome = null;
-        txtCientifico = null;
-        txtFamilia = null;
-        txtData = null;
-        txtCEP = null;
-        txtEndereco = null;
-        txtNumero = null;
+        txtID.getText().clear(); //zera as variaveis
+        txtNome.getText().clear();
+        txtCientifico.getText().clear();
+        txtFamilia.getText().clear();
+        txtData.getText().clear();
+        txtCEP.getText().clear();
+        txtEndereco.getText().clear();
+        txtNumero.getText().clear();
 
 
        openSeletorArquivos();
@@ -515,8 +519,6 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
 
     }
-
-
 
 
 
