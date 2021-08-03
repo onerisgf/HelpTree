@@ -11,7 +11,7 @@
     <View
         android:id="@+id/view33"
         android:layout_width="0dp"
-        android:layout_height="170dp"
+        android:layout_height="200dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
@@ -25,7 +25,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="#8CCFB9"
@@ -41,7 +40,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
         android:background="#8CCFB9"
         app:layout_constraintBottom_toTopOf="@+id/view31"
         app:layout_constraintEnd_toStartOf="@+id/imageView3"
@@ -53,7 +51,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
         android:background="#8CCFB9"
@@ -63,34 +60,34 @@
         app:layout_constraintTop_toBottomOf="@+id/view30" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName3"
+        android:id="@+id/txtNomeConta"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#4B4951"
         android:ems="10"
         android:hint="Nome"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName12"
+        app:layout_constraintBottom_toTopOf="@+id/txtEmailConta"
         app:layout_constraintEnd_toEndOf="@+id/view31"
         app:layout_constraintStart_toStartOf="@+id/view31"
         app:layout_constraintTop_toBottomOf="@+id/view30"
         app:layout_constraintTop_toTopOf="@+id/view31" />/>
 
     <EditText
-        android:id="@+id/editTextTextPersonName14"
+        android:id="@+id/txtLoginConta"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#4B4951"
         android:ems="10"
         android:hint="Login"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName15"
+        app:layout_constraintBottom_toTopOf="@+id/txtSenhaConta"
         app:layout_constraintEnd_toEndOf="@+id/view30"
         app:layout_constraintStart_toStartOf="@+id/view30"
         app:layout_constraintTop_toTopOf="@+id/view30" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName15"
+        android:id="@+id/txtSenhaConta"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#4B4951"
@@ -100,10 +97,10 @@
         app:layout_constraintBottom_toBottomOf="@+id/view30"
         app:layout_constraintEnd_toEndOf="@+id/view30"
         app:layout_constraintStart_toStartOf="@+id/view30"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName14" />
+        app:layout_constraintTop_toBottomOf="@+id/txtLoginConta" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName11"
+        android:id="@+id/txtCPFConta"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#4B4951"
@@ -113,10 +110,10 @@
         app:layout_constraintBottom_toBottomOf="@+id/view21"
         app:layout_constraintEnd_toEndOf="@+id/view21"
         app:layout_constraintStart_toStartOf="@+id/view21"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName10" />
+        app:layout_constraintTop_toBottomOf="@+id/txtSobrenomeConta" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName12"
+        android:id="@+id/txtEmailConta"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#4B4951"
@@ -126,17 +123,17 @@
         app:layout_constraintBottom_toBottomOf="@+id/view31"
         app:layout_constraintEnd_toEndOf="@+id/view31"
         app:layout_constraintStart_toStartOf="@+id/view31"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3" />
+        app:layout_constraintTop_toBottomOf="@+id/txtNomeConta" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName10"
+        android:id="@+id/txtSobrenomeConta"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#4B4951"
         android:ems="10"
         android:hint="Sobrenome"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName11"
+        app:layout_constraintBottom_toTopOf="@+id/txtCPFConta"
         app:layout_constraintEnd_toEndOf="@+id/view21"
         app:layout_constraintStart_toStartOf="@+id/view21"
         app:layout_constraintTop_toTopOf="@+id/view21" />
@@ -195,7 +192,6 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
         android:background="#8CCFB9"
         app:layout_constraintBottom_toTopOf="@+id/view21"
         app:layout_constraintEnd_toEndOf="parent"

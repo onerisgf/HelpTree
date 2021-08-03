@@ -102,7 +102,7 @@
         app:layout_constraintEnd_toEndOf="@+id/view2"
         app:layout_constraintStart_toStartOf="@+id/view2"
         app:layout_constraintTop_toTopOf="@+id/view2"
-        app:srcCompat="@drawable/logo_tree" />
+        app:srcCompat="@drawable/tree_icon" />
 
     <TextView
         android:id="@+id/lblNome"
@@ -113,7 +113,7 @@
         android:layout_marginBottom="2dp"
         android:fontFamily="casual"
         android:text="HelpTree"
-        android:textColor="#000000"
+        android:textColor="@color/white"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/view2"

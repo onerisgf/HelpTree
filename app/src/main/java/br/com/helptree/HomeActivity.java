@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -32,6 +33,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -93,6 +96,8 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
     public static LatLng local = new LatLng(latitude, longitude);
 
 
+
+
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +114,9 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
         txtNumero = findViewById(R.id.txtNumero);
         txtID = findViewById(R.id.txtID);
 
+        txtID.setKeyListener(null);  //DEIXA INATIVO PARA EDIÇÃO
+        txtData.setKeyListener(null);
+
 
         imageTree = findViewById(R.id.imageTree);
 
@@ -117,9 +125,24 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
         myFireStoreRef = FirebaseFirestore.getInstance();
 
 
+        //CAPTURA OS DADOS OBTIDOS DA TELA DE DO WORD MAP
+
+        Intent pagina = getIntent();
+        Bundle params = pagina.getExtras();
+
+        String idTree = "wUGLCjRveUA42OvYsipn";  //ARVORE DE INICIO PADRÃO
+
+        //CASO HAJA PARAMETROS
+
+        if (params != null) {
+
+            idTree = params.getString("id");
+
+        }
+
+
         //CHAMA A FUNÇÃO QUE TRAS OS DADOS DA ARVORE
 
-        String idTree = "wUGLCjRveUA42OvYsipn";
 
         getDadosArvore(idTree);
 
@@ -280,22 +303,34 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
     }
 
-    //METODOS PARA SELECIONAR IMAGEM DA GALERIA
+    //METODOS PARA ADICIONAR IMAGEM
 
     public void addTreeClick(View v){
 
-
-        txtID.getText().clear(); //zera as variaveis
-        txtNome.getText().clear();
-        txtCientifico.getText().clear();
-        txtFamilia.getText().clear();
-        txtData.getText().clear();
-        txtCEP.getText().clear();
-        txtEndereco.getText().clear();
-        txtNumero.getText().clear();
-
-
        openSeletorArquivos();
+
+    }
+
+    //METODO PARA ATUALIZAR ARVORE
+
+    public void editTreeClick(View v){
+
+        Map<String,Object> dadosTree = new HashMap<>();
+
+        dadosTree.put("Nome", txtNome.getText().toString());
+        dadosTree.put("Cientifico", txtCientifico.getText().toString());
+        dadosTree.put("Familia", txtFamilia.getText().toString());
+        dadosTree.put("CEP", txtCEP.getText().toString());
+
+        myFireStoreRef.collection("arvores").document(txtID.getText().toString()).update(dadosTree)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(HomeActivity.this,"Atualizado com Sucesso!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
 
     }
 
@@ -303,22 +338,50 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
     public void deleteTreeClick(View v){
 
-        myFireStoreRef.collection("arvores").document(txtID.getText().toString())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
+        final Boolean[] verifica = {false};
 
-                        Toast.makeText(HomeActivity.this, "Arvore deletada", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(HomeActivity.this, "Não encontrou a arvore", Toast.LENGTH_LONG).show();
-                    }
-                });
+        AlertDialog.Builder msgBox = new AlertDialog.Builder(this);
 
+        msgBox.setMessage("Deletar Arvore!");
+        msgBox.setTitle("Você Tem certeza que deseja deletar esta arvore?");
+
+        msgBox.setPositiveButton("Deletar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                verifica[0] = true;
+
+            }
+        });
+
+        msgBox.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+
+            }
+        });
+
+        msgBox.show();
+
+
+        if(verifica[0] == true) {
+
+            myFireStoreRef.collection("arvores").document(txtID.getText().toString())
+                    .delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                            Toast.makeText(HomeActivity.this, "Arvore deletada", Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(HomeActivity.this, "Não encontrou a arvore", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+        }
     }
 
     //METODO PARA BUSCAR ARVORES
@@ -391,6 +454,16 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
                 if ( imagem != null ) {
 
+                    txtID.getText().clear(); //zera as variaveis
+                    txtNome.getText().clear();
+                    txtCientifico.getText().clear();
+                    txtFamilia.getText().clear();
+                    txtData.getText().clear();
+                    txtCEP.getText().clear();
+                    txtEndereco.getText().clear();
+                    txtNumero.getText().clear();
+
+
                     //Mostra a imagem na tela
                     imageTree.setImageBitmap(imagem);
 
@@ -460,11 +533,7 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
                 public void onFailure(@NonNull Exception e) {
 
-                    Toast.makeText(HomeActivity.this,
-
-                            "Erro ao fazer upload da imagem",
-
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(HomeActivity.this,"Erro ao fazer upload da imagem", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -581,7 +650,13 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
         String nomeTree = txtNome.getText().toString();
 
-        map.addMarker(new MarkerOptions().position(local).title(nomeTree));
+        int height = 80;
+        int width = 80;
+        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.logo_tree);
+        Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        BitmapDescriptor smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(smallMarker);
+
+        map.addMarker(new MarkerOptions().position(local).title(nomeTree).icon(smallMarkerIcon));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(local, 15f));
     }
 
