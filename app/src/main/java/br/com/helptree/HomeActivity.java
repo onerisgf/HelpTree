@@ -342,7 +342,6 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
         AlertDialog.Builder msgBox = new AlertDialog.Builder(this);
 
-        msgBox.setMessage("Deletar Arvore!");
         msgBox.setTitle("Você Tem certeza que deseja deletar esta arvore?");
 
         msgBox.setPositiveButton("Deletar", new DialogInterface.OnClickListener() {

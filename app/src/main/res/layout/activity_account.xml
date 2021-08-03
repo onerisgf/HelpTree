@@ -197,6 +197,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/view30"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo_tree" />
+        app:srcCompat="@drawable/admin_user" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
