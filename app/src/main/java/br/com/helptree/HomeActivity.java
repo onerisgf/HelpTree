@@ -2,6 +2,7 @@ package br.com.helptree;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -10,6 +11,7 @@ import android.Manifest;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
@@ -296,6 +299,8 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
 
     }
 
+    //METODO DELETA ARVORE
+
     public void deleteTreeClick(View v){
 
         myFireStoreRef.collection("arvores").document(txtID.getText().toString())
@@ -315,6 +320,49 @@ public class HomeActivity extends AppCompatActivity  implements OnMapReadyCallba
                 });
 
     }
+
+    //METODO PARA BUSCAR ARVORES
+
+    public void pesquisaTreeClick(View v){
+
+        showModalBusca();
+
+    }
+
+    //ABRE A MODAL PARA INSERIR O ID DE BUSCA
+
+    public void showModalBusca(){
+
+        AlertDialog.Builder msgBox = new AlertDialog.Builder(this);
+
+        final EditText txtBuscaTree = new EditText(HomeActivity.this);
+
+        msgBox.setMessage("Insira o ID:");
+        msgBox.setTitle("Buscar Arvore");
+
+        msgBox.setView(txtBuscaTree);
+
+        msgBox.setPositiveButton("Buscar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                String txtBusca = txtBuscaTree.getText().toString();
+
+                getDadosArvore(txtBusca);
+
+            }
+        });
+
+        msgBox.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+            }
+        });
+
+        msgBox.show();
+    }
+
+
+    //METODO DE SELETOR DE ARQUIVOS
 
     private void openSeletorArquivos(){
 
